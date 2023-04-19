@@ -1,0 +1,77 @@
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.vaultBanner{
+    background-color: #7fa3fb;
+    width: 100%;
+}
+
+#vaultTitle{
+    font-size: 35px;
+    margin-left:115px;
+
+}
+
+.main{
+    display: flex;
+    flex-direction: row-reverse;
+    background-color: #7fa3fb;
+}
+
+.tableBox
+{
+    width: 70%;
+    border: 3px solid black;
+}
+
+.table{
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    padding: 10px;
+    overflow: auto;
+    background: #1f2430;
+}
+
+#webName{
+    width: 33%;
+}
+#webUsername{
+    width: 33%;
+}
+#webPassword{
+    width: 33%;
+}
+
+.table ul{
+list-style-type: none;
+}
+
+.table li{
+padding: 10px;
+border-bottom: 1px solid black;
+}
+
+.graphText{
+    font-size:medium;
+    text-align: center;
+    color: #2cbbeb;
+}
+
+.graphTitle{
+    font-size:large;
+    text-align: center;
+    color: #2cbbeb;
+    padding-bottom: 20px;
+}
+
+.buttonBox{
+width: 30%;
+border: 5px solid black;
+}
+    
+    
