@@ -1,0 +1,32 @@
+.homeMain{
+    height: 100%;
+    background-color: #7fa3fb
+}
+.main{
+    height: 100vh;
+}
+.alert {
+    padding: 5px;
+    border: 0px solid transparent;
+    border-radius: 4px;
+    font-size: medium;
+    text-align: center;
+    background: cornflowerblue;
+  }
+  
+  /* The close button */
+  .closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  /* When moving the mouse over the close button */
+  .closebtn:hover {
+    color: black;
+  }

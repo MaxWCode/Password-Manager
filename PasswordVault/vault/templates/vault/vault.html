@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block pageTitle %}
+    The Vault
+{% endblock %}
+
+{% block content %}
+    <div class="vaultBanner">
+        <h1 id="vaultTitle">THE VAULT</h1>
+    </div>
+    <div class="main">
+        <div class="tableBox">
+            <div class="table">
+                <div id='webName'>
+                    <p class="graphTitle">Website name</p>
+                    <ul>
+                        {% for password in passwords %}
+                            <li><p class="graphText">{{ password.website_name }}</p></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div id='webUsername'>
+                    <p class="graphTitle">Username</p>
+                    <ul>
+                        {% for password in passwords %}
+                            <li><p class="graphText">{{password.username}}</p></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div id='webPassword'>
+                    <h1 class="graphTitle">Password</h1>
+                    <ul>
+                        {% for password in passwords %}
+                            <li><p class="graphText">{{password.website_password}}</p></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="buttonBox">
+            <h1>ButtonBox</h1>
+        </div>
+    </div>    
+{% endblock %}
+    

@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'vault/BaseStyle.css' %}">
+    <link rel="stylesheet" href="{% static 'vault/Signin.css' %}">
+    <link rel="stylesheet" href="{% static 'vault/Home.css' %}">
+    <link rel="stylesheet" href="{% static 'vault/vault.css' %}">
+    <title>{% block pageTitle %}The Vault{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <a href="{% url 'home' %}"><img class="logo" src="{% static 'vault/logo.png' %}" alt="logo"></a>
+        <nav class="navLinkBox">
+            <ul class="navLinks">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'vault' %}">Vault</a></li>
+                <li><a href="{% url 'home' %}">About</a></li>
+            </ul>
+        </nav>
+        <div class = "Navbuttons">
+        <a class="cta" href="{% url 'login' %}"><button>Login</button></a>
+        <a class="cta" href="{% url 'logout' %}"><button>Logout</button></a>
+        </div>
+    </header>
+    <h1>{% block content %}{% endblock %}</h1>
+</body>
+</html>
