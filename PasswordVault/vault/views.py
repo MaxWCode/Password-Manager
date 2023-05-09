@@ -9,17 +9,35 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .models import Info
 
+
+
+
 # Create your views here.
 def index(request):
     return render(request, "vault/index.html")
 
-@login_required
+@login_required(login_url='/login/')
 def vault(request):
     passwords = Info.objects.filter(user_account=request.user.id)
+    form = forms.InfoForm(request.POST)
+    if form.is_valid():
+        website_name = form.cleaned_data['website_name']
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['website_password']
+        info = Info(user_account=request.user, website_name=website_name, username=username, website_password=password)
+        info.save()
+        messages.success(request, "Password added successfully!")
+        return HttpResponseRedirect(reverse('vault'))
 
+    
+    infoForm = forms.InfoForm()
     return render(request, "vault/vault.html", {
-        "passwords": passwords
+        "passwords": passwords,
+        "infoForm": infoForm,
     })
+
+    
+
 
 def login_view(request):
     if request.method == "POST":
@@ -34,10 +52,10 @@ def login_view(request):
             if user is not None:
                 # Authenticate the user and log them in
                 login(request, user)
-                return HttpResponseRedirect("/home", {"messages": messages.get_messages(request), "username": username})
+                return HttpResponseRedirect(reverse('home'))
             else:
                 # Display an error message if authentication fails
-                messages.error(request, "Incorrect username or password")
+                messages.error(request, "Incorrect username or password", extra_tags='login_error')
         
     else:
         form = forms.LoginForm()
@@ -54,8 +72,8 @@ def signup(request):
             password=form.cleaned_data['password']
             user = User.objects.create_user(username=username, password=password)
             user.save()
-            messages.success(request, "Account Successfully Created!")
-            return HttpResponseRedirect("/login", {"messages": messages.get_messages(request)})
+            messages.success(request, "Account Successfully Created!", extra_tags='login_error')
+            return HttpResponseRedirect(reverse('login'))
         
     else:
         form = forms.SignupForm()
@@ -67,4 +85,4 @@ def signup(request):
 def logout_view(request):
     logout(request)
     messages.success(request, "Successfully Logged Out")
-    return HttpResponseRedirect('/home', {"messages": messages.get_messages(request)})
+    return HttpResponseRedirect('/', {"messages": messages.get_messages(request)})
