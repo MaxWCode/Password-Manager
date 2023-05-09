@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block pageTitle %}
     The Vault
@@ -6,7 +7,6 @@
 
 {% block content %}
     <div class="vaultBanner">
-        <h1 id="vaultTitle">THE VAULT</h1>
     </div>
     <div class="main">
         <div class="tableBox">
@@ -30,16 +30,59 @@
                 <div id='webPassword'>
                     <h1 class="graphTitle">Password</h1>
                     <ul>
-                        {% for password in passwords %}
-                            <li><p class="graphText">{{password.website_password}}</p></li>
-                        {% endfor %}
+                        <div id="passwordTable">
+                            {% for password in passwords %}
+                                <li class="passwordBox">
+                                    <p class="graphText">
+                                        <span>{{ "********"|slice:":8" }}</span>
+                                    </p>
+                                        <a id="passIconBox">
+                                            <img class="passwordIcon" src="{% static 'vault/PasswordHidden.png' %}">
+                                        </a>
+                                </li>
+                            {% endfor %}
+                        </div>
                     </ul>
                 </div>
             </div>
         </div>
-        <div class="buttonBox">
-            <h1>ButtonBox</h1>
-        </div>
-    </div>    
+            <div class="buttonBox">
+                <div class="buttonBoxTitle">
+                    <h1 id="vaultTitle">THE VAULT<h1>
+                </div>
+                <div class="addForm">
+                    <form action="/vault" method="post">
+                        {% csrf_token %}
+                        <h4 id="addFormBoxTitle">Add To Vault</h4>
+                        <li >
+                            <div class="addFormBox">
+                                {{infoForm.website_name}}
+                            <span></span>
+                            </div>
+                        </li>
+                        <li >
+                            <div class="addFormBox">
+                                {{infoForm.username}}
+                            <span></span>
+                            </div>
+                        </li>
+                        <li >
+                            <div class="addFormBox">
+                                {{infoForm.website_password}}
+                            <span></span>
+                            </div>
+                        </li>
+                        <input id="addPasswordButton" type="submit" value="Add Password">
+                    </form>
+                </div>
+                <div class="buttons">
+
+                </div>
+            </div>
+    </div> 
 {% endblock %}
+
+{% block scripts %}
     
+{% endblock %}
+
