@@ -16,7 +16,7 @@ from .models import Info
 def index(request):
     return render(request, "vault/index.html")
 
-@login_required(login_url='/login/')
+@login_required(login_url='/login')
 def vault(request):
     passwords = Info.objects.filter(user_account=request.user.id)
     form = forms.InfoForm(request.POST)
@@ -26,7 +26,6 @@ def vault(request):
         password = form.cleaned_data['website_password']
         info = Info(user_account=request.user, website_name=website_name, username=username, website_password=password)
         info.save()
-        messages.success(request, "Password added successfully!")
         return HttpResponseRedirect(reverse('vault'))
 
     

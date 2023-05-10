@@ -34,10 +34,10 @@
                             {% for password in passwords %}
                                 <li class="passwordBox">
                                     <p class="graphText">
-                                        <span>{{ "********"|slice:":8" }}</span>
+                                        {{password.website_password}}
                                     </p>
-                                        <a id="passIconBox">
-                                            <img class="passwordIcon" src="{% static 'vault/PasswordHidden.png' %}">
+                                        <a id="passIconBox" onclick="changeImage()">
+                                            <img class="passwordIcon" onclick="changeImage()" id="passIcon" src="{% static 'vault/PasswordHidden.png' %}">
                                         </a>
                                 </li>
                             {% endfor %}
@@ -83,6 +83,18 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+    function changeImage() {
+        // get the image element by id
+        var img = document.getElementById("passIcon");
+        // get the password input element by id
+        var password = document.getElementById("id_website_password");
+        // toggle the type attribute of the password input element
+        password.type = password.type === "password" ? "text" : "password";
+        // change the source attribute of the image
+        img.src = password.type === "password" ? "{% static 'vault/PasswordHidden.png' %}" : "{% static 'vault/PasswordUnhidden.png' %}";
+    }
     
+</script>
 {% endblock %}
 
