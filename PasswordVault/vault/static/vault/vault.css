@@ -237,7 +237,7 @@ h4#addFormBoxTitle {
 
 #passwordTable li {
   display: flex;
-  justify-content: right;
+  justify-content: center;
   padding: 10px;
   border-bottom: 1px solid black;
 }

@@ -1,5 +1,5 @@
 {
-    "python.languageServer": "Pylance",
+    "python.languageServer": "None",
     "files.associations": {
         "**/*.html": "html",
         "**/templates/**/*.html": "django-html",

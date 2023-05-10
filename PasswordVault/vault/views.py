@@ -7,10 +7,23 @@ from . import forms
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from cryptography.fernet import Fernet
 from .models import Info
 
 
+# ENCRYPTION FUNCTIONS
+key = Fernet.generate_key()
+def encrypt_data(data, key):
+    f = Fernet(key)
+    encrypted_data = f.encrypt(data.encode())
+    return encrypted_data
 
+def decrypt_data(encrypted_data, key):
+    f = Fernet(key)
+    decrypted_data = f.decrypt(encrypted_data).decode()
+    return decrypted_data
+#{{ decrypt_data(password.website_password, key) }}
+# ENCRYPTION FUNCTIONS
 
 # Create your views here.
 def index(request):
@@ -24,7 +37,8 @@ def vault(request):
         website_name = form.cleaned_data['website_name']
         username = form.cleaned_data['username']
         password = form.cleaned_data['website_password']
-        info = Info(user_account=request.user, website_name=website_name, username=username, website_password=password)
+        encrypted_password = encrypt_data(password, key)
+        info = Info(user_account=request.user, website_name=website_name, username=username, website_password=encrypted_password)
         info.save()
         return HttpResponseRedirect(reverse('vault'))
 
