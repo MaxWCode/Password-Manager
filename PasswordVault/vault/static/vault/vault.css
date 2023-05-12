@@ -236,13 +236,19 @@ h4#addFormBoxTitle {
 }
 
 #passwordTable li {
-  display: flex;
-  justify-content: center;
-  padding: 10px;
-  border-bottom: 1px solid black;
+    display: flex;
+    justify-content: right;
+    padding: 10px;
+    border-bottom: 1px solid black;
 }
 
 a#passIconBox {
-    margin-left: 80px;
+    margin-left: 63px;
 }
 
+button#passwordButton {
+  padding: 0;
+  margin: 0;
+  height: 24px;
+  width: 113px;
+}

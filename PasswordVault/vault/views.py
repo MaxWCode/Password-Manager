@@ -99,3 +99,14 @@ def logout_view(request):
     logout(request)
     messages.success(request, "Successfully Logged Out")
     return HttpResponseRedirect('/', {"messages": messages.get_messages(request)})
+
+def copy_password(request):
+    if request.method == 'POST':
+        key = Fernet.generate_key()
+        fernet = Fernet(key)
+        password_id = request.POST.get('password_id')
+        password = Info.objects.get(pk=password_id)
+        decrypted_password = fernet.decrypt(password.website_password).decode()
+        pyperclip.copy(decrypted_password)
+        messages.success(request, 'Password copied to clipboard.')
+    return redirect('vault')

@@ -32,12 +32,18 @@
                     <ul>
                         <div id="passwordTable">
                             {% for password in passwords %}
-                                <li class="passwordBox">
-                                    <p class="graphText">
-                                        {% comment %} {{password.website_password}} {% endcomment %}
-                                        <a class="copyPassword" data-password="{{ password.website_password }}">********</a>
-                                    </p>
-                                </li>
+                                    <li class="passwordBox">
+                                            <button id="passwordButton" class="copy-password" data-password="{{password.id}}">
+                                                <p class="graphText">
+                                                {% comment %} {{password.website_password}} {% endcomment %}
+                                                ********
+                                                </p>
+                                            </button>
+                                            <a id="passIconBox">
+                                                <img class="passwordIcon" id="passIcon" src="{% static 'vault/PasswordHidden.png' %}">
+                                            </a>
+                                        </a>
+                                    </li>
                             {% endfor %}
                         </div>
                     </ul>
@@ -80,8 +86,5 @@
     </div> 
 {% endblock %}
 
-{% block scripts %}
-<script>
 
-</script>
-{% endblock %}
+
