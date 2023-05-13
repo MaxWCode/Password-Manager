@@ -32,19 +32,13 @@
                     <ul>
                         <div id="passwordTable">
                             {% for password in passwords %}
-                                    <li class="passwordBox">
-                                            <button id="passwordButton" class="copy-password" data-password="{{password.id}}">
-                                                <p class="graphText">
-                                                {% comment %} {{password.website_password}} {% endcomment %}
-                                                ********
-                                                </p>
-                                            </button>
-                                            <a id="passIconBox">
-                                                <img class="passwordIcon" id="passIcon" src="{% static 'vault/PasswordHidden.png' %}">
-                                            </a>
-                                        </a>
-                                    </li>
-                            {% endfor %}
+                            <li class="passwordBox">
+                                <a href="{% url 'copy_password' password_id=password.id %}">Copy Password</a>
+                                <a id="passIconBox">
+                                    <img class="passwordIcon" id="passIcon" src="{% static 'vault/PasswordHidden.png' %}">
+                                </a>
+                            </li>
+                        {% endfor %}
                         </div>
                     </ul>
                 </div>
@@ -80,7 +74,13 @@
                     </form>
                 </div>
                 <div class="buttons">
-
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags == 'vault' %} class="{{ message.tags.error }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %} 
                 </div>
             </div>
     </div> 
