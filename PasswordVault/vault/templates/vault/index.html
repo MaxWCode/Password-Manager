@@ -4,29 +4,29 @@
 {% endblock %}
 
 {% block content %}
-    <div class="homeMain">
+    <div id="homeMain">
         {% if user.is_authenticated %}
-        <div class="alert">
-            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-            <h6>Active Account: {{ user.username }}</h3>
-          </div>
-        <div>
-        {% endif %}
-        {% comment %}VALIDATION{% endcomment %}
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %} 
-        {% comment %}VALIDATION{% endcomment %}
-        {% if not user.is_authenticated %}
-        <h1> SIGN IN AND START USING TODAY!!
-        {% endif %} 
+            <div id="homeAlert">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                <h6>Active Account: {{ user.username }}</h3>
+            </div>
 
-        </div>
-        <div>
-        <div class="main">
-        </div>
+            <div id="mainBox">
+                {% if user.profile.master_password_set %}
+                    <!-- Master password already set -->
+                    <h1>Master Password has already been set.</h1>
+                {% else %}
+                    <!-- Master password not set -->
+                <div id="masterPassBox">
+                    <h1> SET A MASTER PASSWORD </h1>
+                    <form action="/" method="post">
+                        {% csrf_token %}
+                        <input type="password" name="master_password" placeholder="Enter Master Password" required>
+                        <input type="submit" value="Submit">
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        {% endif %} 
+    </div>
 {% endblock %}

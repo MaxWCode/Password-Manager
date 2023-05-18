@@ -34,8 +34,8 @@
                             {% for password in passwords %}
                             <li class="passwordBox">
                                 <a href="{% url 'copy_password' password_id=password.id %}">Copy Password</a>
-                                <a id="passIconBox">
-                                    <img class="passwordIcon" id="passIcon" src="{% static 'vault/PasswordHidden.png' %}">
+                                <a href="{% url 'delete_password' password_id=password.id %}" id="passIconBox">
+                                    <img class="passwordIcon" id="passIcon" src="{% static 'vault/Trashcan.png' %}">
                                 </a>
                             </li>
                         {% endfor %}
@@ -74,6 +74,7 @@
                     </form>
                 </div>
                 <div class="buttons">
+                    <h4 id="addFormBoxTitle">Unlock The Vault</h4>
                     {% if messages %}
                     <ul class="messages">
                         {% for message in messages %}

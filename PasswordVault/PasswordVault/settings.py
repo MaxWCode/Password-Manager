@@ -24,13 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-t&v5%d=^i0ri-+*c5w9h&$qtk*x98iuh@)1%_w1$n6hyoz3@*j'
 
 # Generate the encryption key and store it in an environment variable
-import environ
-# Initialise environment variables
-env = environ.Env()
-environ.Env.read_env()
+from dotenv import load_dotenv
+load_dotenv()
 
-
-key = decouple.config('ENCRYPTION_KEY').encode()
+ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

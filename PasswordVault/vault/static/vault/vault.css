@@ -225,9 +225,9 @@ h4#addFormBoxTitle {
 }
 
 .passwordIcon{
-    vertical-align: middle;
-    height: 18px;
-    width: auto;
+  vertical-align: middle;
+  height: 35px;
+  width: auto;
 }
 .passwordIcon:hover{
     cursor: pointer;
@@ -236,15 +236,16 @@ h4#addFormBoxTitle {
 }
 
 #passwordTable li {
-    display: flex;
-    justify-content: right;
-    padding: 10px;
-    border-bottom: 1px solid black;
+  display: flex;
+  justify-content: right;
+  padding: 10.4px;
+  border-bottom: 1px solid black;
 }
 
 a#passIconBox {
-    margin-left: 63px;
-}
+  margin-left: 49px;
+  margin-top: -9px;
+  margin-bottom: -9px;}
 
 button#passwordButton {
   padding: 0;
