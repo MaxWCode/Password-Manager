@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.conf import settings
+from cryptography.fernet import Fernet, InvalidToken
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -7,23 +9,16 @@ from . import forms
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from cryptography.fernet import Fernet
 from .models import Info
+import pyperclip
+import os
 
 
 # ENCRYPTION FUNCTIONS
-key = Fernet.generate_key()
-def encrypt_data(data, key):
-    f = Fernet(key)
-    encrypted_data = f.encrypt(data.encode())
-    return encrypted_data
-
-def decrypt_data(encrypted_data, key):
-    f = Fernet(key)
-    decrypted_data = f.decrypt(encrypted_data).decode()
-    return decrypted_data
-#{{ decrypt_data(password.website_password, key) }}
-# ENCRYPTION FUNCTIONS
+key = settings.ENCRYPTION_KEY.encode('utf-8')
+if not key:
+    raise ValueError("Encryption key is not set or is invalid")
+FERNET = Fernet(key)
 
 # Create your views here.
 def index(request):
@@ -32,21 +27,21 @@ def index(request):
 @login_required(login_url='/login')
 def vault(request):
     passwords = Info.objects.filter(user_account=request.user.id)
-    form = forms.InfoForm(request.POST)
-    if form.is_valid():
-        website_name = form.cleaned_data['website_name']
-        username = form.cleaned_data['username']
-        password = form.cleaned_data['website_password']
-        encrypted_password = encrypt_data(password, key)
-        info = Info(user_account=request.user, website_name=website_name, username=username, website_password=encrypted_password)
-        info.save()
-        return HttpResponseRedirect(reverse('vault'))
-
-    
-    infoForm = forms.InfoForm()
+    if request.method == 'POST':
+        form = forms.InfoForm(request.POST)
+        if form.is_valid():
+            website_name = form.cleaned_data['website_name']
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['website_password']
+            encrypted_password = FERNET.encrypt(password.encode('utf-8'))
+            info = Info(user_account=request.user, website_name=website_name, username=username, website_password=encrypted_password)
+            info.save()
+            return HttpResponseRedirect(reverse('vault'))
+    else:
+        form = forms.InfoForm()
     return render(request, "vault/vault.html", {
         "passwords": passwords,
-        "infoForm": infoForm,
+        "infoForm": form,
     })
 
     
@@ -98,15 +93,35 @@ def signup(request):
 def logout_view(request):
     logout(request)
     messages.success(request, "Successfully Logged Out")
-    return HttpResponseRedirect('/', {"messages": messages.get_messages(request)})
+    return redirect('home')
 
-def copy_password(request):
-    if request.method == 'POST':
-        key = Fernet.generate_key()
-        fernet = Fernet(key)
-        password_id = request.POST.get('password_id')
-        password = Info.objects.get(pk=password_id)
-        decrypted_password = fernet.decrypt(password.website_password).decode()
-        pyperclip.copy(decrypted_password)
+@login_required(login_url='/login')
+def copy_password(request, password_id):
+    decrypted_password = ''
+    #Get Specific User
+    try:
+        user = Info.objects.get(pk=password_id, user_account=request.user)
+    except Info.DoesNotExist:
+        messages.error(request, 'Password not found.')
+        return redirect('vault')
+        
+    try:
+        decrypted_password = FERNET.decrypt(eval(user.website_password))
+        pyperclip.copy(decrypted_password.decode())
         messages.success(request, 'Password copied to clipboard.')
+    except InvalidToken as error:
+        messages.error(request, 'Invalid Token', extra_tags="vault")
+        return redirect('vault')
+        
+    return redirect('vault')
+
+
+@login_required(login_url='/login')
+def delete_password(request, password_id):
+    try:
+        user = get_object_or_404(Info, pk=password_id, user_account=request.user)
+        user.delete()
+        messages.success(request, 'Password deleted successfully.')
+    except Info.DoesNotExist:
+        messages.error(request, 'Password not found.')
     return redirect('vault')

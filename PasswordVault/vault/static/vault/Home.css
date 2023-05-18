@@ -1,11 +1,24 @@
-.homeMain{
+#homeMain{
     height: 100%;
     background-color: #7fa3fb
 }
-.main{
-    height: 100vh;
+#mainBox{
+  display: flex;
+  flex-direction: row;
+  background-color: #7fa3fb;
 }
-.alert {
+
+#masterPassBox{
+  margin-left: 8vh;
+  height: 60vh;
+  margin-top: 10vh;
+  width: 30%;
+  background-color: #1f2430;
+  border-radius: 14px;
+  border: 10px solid darkcyan;
+}
+
+#homeAlert{
     padding: 5px;
     border: 0px solid transparent;
     border-radius: 4px;

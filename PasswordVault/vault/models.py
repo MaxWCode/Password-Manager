@@ -10,4 +10,3 @@ class Info(models.Model):
 
     def __str__(self):
         return f"{self.website_name} ('{self.username} : {self.website_password}') -- ({self.user_account})"
-     
