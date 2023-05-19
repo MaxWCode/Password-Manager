@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block pageTitle %}
+{% endblock %}
+
+{% block content %}
+    <div id="homeMain">
+        {% if user.is_authenticated %}
+            <div id="homeAlert">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                <h6>Active Account: {{ user.username }} SMELLS</h3>
+            </div>
+
+            <div id="mainBox">
+                {% if user.profile.master_password_set %}
+                    <!-- Master password already set -->
+                    <h1>Master Password has been set.</h1>
+                {% else %}
+                    <!-- Master password not set -->
+                <div id="masterPassBox">
+                    <h1 id="masterPassTitle"> SET A MASTER PASSWORD </h1>
+                    <form id="masterForm" action="account" method="post">
+                        {% csrf_token %}
+                        <input class="masterPasswordInput" type="password" name="master_password" placeholder="Enter Master Password" required>
+                        <input class="masterPasswordInput" type="password" name="re_master_password" placeholder="Re-Enter Master Password" required>
+                        <input id="masterPassSubmit" type="submit" value="Submit">
+                    </form>
+                </div>
+                <div>
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags == 'account_message' %} class="{{ message.tags.error }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %} 
+                </div>
+            </div>
+            {% endif %}
+        {% endif %} 
+    </div>
+{% endblock %}

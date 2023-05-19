@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'vault/Signin.css' %}">
     <link rel="stylesheet" href="{% static 'vault/Home.css' %}">
     <link rel="stylesheet" href="{% static 'vault/vault.css' %}">
+    <link rel="stylesheet" href="{% static 'vault/account.css' %}">
     <title>{% block pageTitle %}The Vault{% endblock %}</title>
 </head>
 <body>
@@ -19,7 +20,7 @@
             <ul class="navLinks">
                 <li><a href="{% url 'home' %}">Home</a></li>
                 <li><a href="{% url 'vault' %}">Vault</a></li>
-                <li><a href="{% url 'home' %}">About</a></li>
+                <li><a href="{% url 'account' %}">Account</a></li>
             </ul>
         </nav>
         <div class = "Navbuttons">

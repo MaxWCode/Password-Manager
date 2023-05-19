@@ -1,0 +1,38 @@
+h1#masterPassTitle {
+    font-size: 40px;
+    text-align: center;
+    padding: 19px;
+    margin-bottom: -27px;
+}
+
+#masterPassBox {
+    margin-left: 8vh;
+    height: 60vh;
+    margin-top: 10vh;
+    width: 30%;
+    background-color: #1f2430;
+    border-radius: 14px;
+    border: 10px solid darkcyan;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+form#masterForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+input#masterPasswordInput {
+    width: 200%;
+    margin-top: 33px;
+    height: 59px;
+}
+
+input#masterPassSubmit {
+    margin: 38px;
+    margin-top: 49px;
+}

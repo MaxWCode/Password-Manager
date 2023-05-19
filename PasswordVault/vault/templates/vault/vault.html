@@ -5,6 +5,12 @@
     The Vault
 {% endblock %}
 
+{% block header %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
     <div class="vaultBanner">
     </div>
@@ -73,18 +79,48 @@
                         <input id="addPasswordButton" type="submit" value="Add Password">
                     </form>
                 </div>
+
                 <div class="buttons">
-                    <h4 id="addFormBoxTitle">Unlock The Vault</h4>
-                    {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li{% if message.tags == 'vault' %} class="{{ message.tags.error }}"{% endif %}>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %} 
+                    <h4 id="master_input_title">Unlock The Vault</h4>
+                    <form action="/vault" method="post">
+                        {% csrf_token %}
+                        <li>
+                            <div class="addFormBox">
+                                <input type="password" name="master_password" id="input_master_password" maxlength="50" required="" placeholder="Enter Master Password">
+                                <span></span>
+                            </div>
+                        </li>
+                        <input id="addPasswordButton" type="submit" value="Submit">
+                    </form>
+                </div>
+
+                <div class="messageBox">
+                    <div class="tvScreen">
+                        <ul class="vault_messages" id="vaultMessagesContainer">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <h3><li{% if message.tags == 'vault' %} class="{{ message.tags.error }}"{% endif %}>{{ message }}</li></h3>
+                                {% endfor %}
+                             {% endif %} 
+                        </ul>
+
+                    </div>
                 </div>
             </div>
     </div> 
+    {% block scripts %}
+    <script>
+        setTimeout(function() {
+            var vaultMessagesContainer = document.getElementById("vaultMessagesContainer");
+            vaultMessagesContainer.style.transition = "opacity 0.5s";
+            vaultMessagesContainer.style.opacity = "0";
+            
+            setTimeout(function() {
+                vaultMessagesContainer.style.display = "none";
+            }, 150);
+        }, 5000);
+    </script>
+    {% endblock %}
 {% endblock %}
 
 
