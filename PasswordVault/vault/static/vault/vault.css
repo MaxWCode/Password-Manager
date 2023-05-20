@@ -11,7 +11,7 @@
 
 #vaultTitle {
   font-size: 40px;
-  font-family: 'Metal Mania', cursive;  background: #1f2430;
+  font-family: 'Metal', cursive;  background: #1f2430;
   border: 2px solid black;
   width: 100%;
   text-align: center;
@@ -313,4 +313,14 @@ button#passwordButton {
   margin: 0;
   height: 24px;
   width: 113px;
+}
+.vaultDoors {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('path/to/Vaultdoors.png');
+  background-size: cover;
+  z-index: 1;
 }

@@ -14,6 +14,7 @@ import pyperclip
 import os
 
 
+
 # ENCRYPTION FUNCTIONS
 key = settings.ENCRYPTION_KEY.encode('utf-8')
 if not key:
@@ -44,10 +45,49 @@ def account(request):
             return redirect('account')
     return render(request, "vault/account.html")
 
+@login_required(login_url='/login')
+def vault_unlock(request):
+    passwords = Info.objects.filter(user_account=request.user.id)
+    if request.method == 'POST':
+        master_password = request.POST.get('master_password')
+        print(master_password)
+        decrypted_password = ''
+        
+        #Get Specific User
+        try:
+            profile = Profile.objects.get(user=request.user)
+            profile_master_password = profile.master_password
+            print(profile_master_password)
+        except Profile.DoesNotExist:
+            messages.error(request, 'Profile not found')
+            return redirect('vault')
+        try:
+            decrypted_password = FERNET.decrypt(eval(profile_master_password)).decode()
+            print(decrypted_password)
+        except InvalidToken as error:
+            messages.error(request, "Invalid Token", extra_tags='vault')
+            return redirect('vault')
+
+    if decrypted_password == master_password:
+        #display the graph
+        messages.success(request, "Unlocked", extra_tags='vault')
+        form = forms.InfoForm()
+        context = {
+        'passwords': passwords,
+        'infoForm' : form
+        }
+        return render(request, 'vault/vault.html', context)
+    else:
+        messages.error(request, "Password doesn't match", extra_tags='vault')
+                    
+    return redirect('vault')
+        
+        
+
+
 
 @login_required(login_url='/login')
 def vault(request):
-    passwords = Info.objects.filter(user_account=request.user.id)
     if request.method == 'POST':
         form = forms.InfoForm(request.POST)
         if form.is_valid():
@@ -62,12 +102,8 @@ def vault(request):
     else:
         form = forms.InfoForm()
     return render(request, "vault/vault.html", {
-        "passwords": passwords,
         "infoForm": form,
     })
-
-    
-
 
 def login_view(request):
     if request.method == "POST":
