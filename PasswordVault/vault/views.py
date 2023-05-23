@@ -13,7 +13,7 @@ from .models import Info, Profile
 import pyperclip
 import os
 
-
+#add status codes gto
 
 # ENCRYPTION FUNCTIONS
 key = settings.ENCRYPTION_KEY.encode('utf-8')
@@ -47,62 +47,71 @@ def account(request):
 
 @login_required(login_url='/login')
 def vault_unlock(request):
-    passwords = Info.objects.filter(user_account=request.user.id)
     if request.method == 'POST':
         master_password = request.POST.get('master_password')
-        print(master_password)
         decrypted_password = ''
         
         #Get Specific User
         try:
             profile = Profile.objects.get(user=request.user)
             profile_master_password = profile.master_password
-            print(profile_master_password)
         except Profile.DoesNotExist:
             messages.error(request, 'Profile not found')
             return redirect('vault')
         try:
             decrypted_password = FERNET.decrypt(eval(profile_master_password)).decode()
-            print(decrypted_password)
         except InvalidToken as error:
             messages.error(request, "Invalid Token", extra_tags='vault')
             return redirect('vault')
 
     if decrypted_password == master_password:
-        #display the graph
-        messages.success(request, "Unlocked", extra_tags='vault')
-        form = forms.InfoForm()
-        context = {
-        'passwords': passwords,
-        'infoForm' : form
-        }
-        return render(request, 'vault/vault.html', context)
+        profile.vault_locked = False
+        profile.save()
+        messages.success(request, "Vault Unlocked", extra_tags='vault')
     else:
         messages.error(request, "Password doesn't match", extra_tags='vault')
-                    
+    return redirect('vault')
+
+@login_required(login_url='/login')
+def vault_lock(request):
+    profile = Profile.objects.get(user=request.user)
+    if request.method == 'POST':
+        if not profile.vault_locked:
+                profile.vault_locked = True
+                profile.save()
+                messages.success(request, "Vault Locked", extra_tags='vault')
+        else:
+            messages.error(request, "Vault Already Locked", extra_tags='vault')
     return redirect('vault')
         
-        
-
-
 
 @login_required(login_url='/login')
 def vault(request):
+    profile = Profile.objects.get(user=request.user)
+    passwords = None  # Initialize passwords as None
+
+    if not profile.vault_locked:
+        passwords = Info.objects.filter(user_account=request.user.id)
+
     if request.method == 'POST':
         form = forms.InfoForm(request.POST)
-        if form.is_valid():
-            website_name = form.cleaned_data['website_name']
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['website_password']
-            encrypted_password = FERNET.encrypt(password.encode('utf-8'))
-            info = Info(user_account=request.user, website_name=website_name, username=username, website_password=encrypted_password)
-            info.save()
-            messages.success(request, "Added to the vault", extra_tags='vault')
-            return HttpResponseRedirect(reverse('vault'))
+        if not profile.vault_locked:
+            if form.is_valid():
+                website_name = form.cleaned_data['website_name']
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['website_password']
+                encrypted_password = FERNET.encrypt(password.encode('utf-8'))
+                info = Info(user_account=request.user, website_name=website_name, username=username, website_password=encrypted_password)
+                info.save()
+                messages.success(request, "Added to the vault", extra_tags='vault')
+                return HttpResponseRedirect(reverse('vault'))
+        else:
+            messages.error(request, "Unlock The Vault", extra_tags='vault')
     else:
         form = forms.InfoForm()
     return render(request, "vault/vault.html", {
-        "infoForm": form,
+        "passwords": passwords,
+        "infoForm": form
     })
 
 def login_view(request):
