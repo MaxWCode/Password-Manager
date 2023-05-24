@@ -15,6 +15,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     master_password = models.CharField(max_length=255, blank=True)
     master_password_set = models.BooleanField(default=False)
+    vault_locked = models.BooleanField(default=True)
 
     def __str__(self):
         return self.user.username

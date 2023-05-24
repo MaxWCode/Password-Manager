@@ -9,6 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -16,6 +19,7 @@
     </div>
     <div class="main">
         <div class="tableBox">
+            {% if not user.profile.vault_locked%}
             <div class="table">
                 <div id='webName'>
                     <p class="graphTitle">Website name</p>
@@ -49,6 +53,10 @@
                     </ul>
                 </div>
             </div>
+            {% endif %}
+            {% if user.profile.vault_locked%}
+                <img id="vaultImg" src="{% static 'vault/Vaultdoors.png' %}">
+            {% endif %}
         </div>
             <div class="buttonBox">
                 <div class="buttonBoxTitle">
@@ -80,6 +88,7 @@
                     </form>
                 </div>
 
+                {% if user.profile.vault_locked%}
                 <div class="buttons">
                     <h4 id="master_input_title">Unlock The Vault</h4>
                     <form action="/vault_unlock" method="post">
@@ -93,6 +102,16 @@
                         <input id="addPasswordButton" type="submit" value="Submit">
                     </form>
                 </div>
+                {% endif %}
+
+                {% if not user.profile.vault_locked%}
+                <div class="buttons" id="buttons-locked">
+                    <form action="/vault_lock" method="post">
+                        {% csrf_token %}
+                        <button class="metal radial"><h3 id="radialButtonText">Lock</h3></button>
+                    </form>
+                </div>
+                {% endif %}
 
                 <div class="messageBox">
                     <div class="tvScreen">
@@ -117,8 +136,8 @@
             
             setTimeout(function() {
                 vaultMessagesContainer.style.display = "none";
-            }, 150);
-        }, 5000);
+            }, 125);
+        }, 1500);
     </script>
     {% endblock %}
 {% endblock %}
