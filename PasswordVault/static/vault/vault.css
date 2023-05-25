@@ -411,6 +411,13 @@ h4#addFormBoxTitle {
   height: 35px;
   width: auto;
 }
+#editIcon{
+  vertical-align: middle;
+  height: 35px;
+  width: auto;
+  padding: 7px;
+}
+
 .passwordIcon:hover{
     cursor: pointer;
     transition: cursor 0.5s ease-in-out; /* cursor transition for half a second */
@@ -435,3 +442,15 @@ button#passwordButton {
   height: 24px;
   width: 113px;
 }
+
+li.website_name_box {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  padding: 2.62px;
+}
+
+a#editBox {
+  padding-right: 90px;
+}
+

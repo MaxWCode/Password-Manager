@@ -96,3 +96,27 @@ class InfoForm(forms.ModelForm):
         model = Info
         fields = ['website_name', 'username', 'website_password']
 
+
+class EditForm(forms.Form):
+    choose_website = forms.CharField(max_length=100, widget=forms.TextInput(attrs={
+        'class': 'editInput',
+        'name': 'choose_website',
+        'maxlength': '100',
+        'required': 'true',
+        'placeholder': 'Choose Website'
+    }))
+    new_username = forms.CharField(max_length=50, widget=forms.TextInput(attrs={
+        'class': 'editInput',
+        'name': 'new_username',
+        'maxlength': '50',
+        'required': 'true',
+        'placeholder': 'New Username'
+    }))
+    new_website_password = forms.CharField(max_length=50, widget=forms.PasswordInput(attrs={
+        'class': 'editInput',
+        'name': 'new_website_password',
+        'type': 'password',
+        'maxlength': '50',
+        'required': 'true',
+        'placeholder': 'New Website Password'
+    }))
