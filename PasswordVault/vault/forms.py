@@ -22,7 +22,7 @@ class SignupForm(forms.Form):
         widget=forms.PasswordInput(attrs={
             'id': 'password',
             'class': 'txt_field',
-            'type': 'text'
+            'type': 'password'
         }),
         error_messages={
             "required": "Enter A Password"
@@ -61,7 +61,7 @@ class LoginForm(forms.Form):
         widget=forms.PasswordInput(attrs={
             'id': 'password',
             'class': 'txt_field',
-            'type': 'text'
+            'type': 'password'
         }),
         error_messages={
             "required": "Enter A Password"
@@ -95,5 +95,4 @@ class InfoForm(forms.ModelForm):
     class Meta:
         model = Info
         fields = ['website_name', 'username', 'website_password']
-
 
