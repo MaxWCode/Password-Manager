@@ -19,13 +19,18 @@
     </div>
     <div class="main">
         <div class="tableBox">
-            {% if not user.profile.vault_locked%}
+            {% if not user.profile.vault_locked %}
             <div class="table">
                 <div id='webName'>
                     <p class="graphTitle">Website name</p>
                     <ul>
                         {% for password in passwords %}
-                            <li><p class="graphText">{{ password.website_name }}</p></li>
+                            <li class="website_name_box">
+                                <a href="#" id="editBox" onclick="showEditForm({{ password.id }});">
+                                    <img class="editIcon" id="editIcon" src="{% static 'vault/editIcon.png' %}">
+                                </a>
+                                <p class="graphText">{{ password.website_name }}</p>
+                            </li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -33,7 +38,7 @@
                     <p class="graphTitle">Username</p>
                     <ul>
                         {% for password in passwords %}
-                            <li><p class="graphText">{{password.username}}</p></li>
+                            <li><p class="graphText">{{ password.username }}</p></li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -42,105 +47,139 @@
                     <ul>
                         <div id="passwordTable">
                             {% for password in passwords %}
-                            <li class="passwordBox">
-                                <a href="{% url 'copy_password' password_id=password.id %}">Copy Password</a>
-                                <a href="{% url 'delete_password' password_id=password.id %}" id="passIconBox">
-                                    <img class="passwordIcon" id="passIcon" src="{% static 'vault/Trashcan.png' %}">
-                                </a>
-                            </li>
-                        {% endfor %}
+                                <li class="passwordBox">
+                                    <a href="{% url 'copy_password' password_id=password.id %}">Copy Password</a>
+                                    <a href="{% url 'delete_password' password_id=password.id %}" id="passIconBox">
+                                        <img class="passwordIcon" id="passIcon" src="{% static 'vault/Trashcan.png' %}">
+                                    </a>
+                                </li>
+                            {% endfor %}
                         </div>
                     </ul>
                 </div>
             </div>
             {% endif %}
-            {% if user.profile.vault_locked%}
+            {% if user.profile.vault_locked %}
                 <img id="vaultImg" src="{% static 'vault/Vaultdoors.png' %}">
             {% endif %}
         </div>
-            <div class="buttonBox">
-                <div class="buttonBoxTitle">
-                    <h1 id="vaultTitle">THE VAULT<h1>
-                </div>
-                <div class="addForm">
+        <div class="buttonBox">
+            <div class="buttonBoxTitle">
+                <h1 id="vaultTitle">THE VAULT<h1>
+            </div>
+            <div id="formContainer">
+                <div class="addForm" id="addForm">
                     <form action="/vault" method="post">
                         {% csrf_token %}
                         <h4 id="addFormBoxTitle">Add To Vault</h4>
-                        <li >
+                        <li>
                             <div class="addFormBox">
-                                {{infoForm.website_name}}
-                            <span></span>
+                                {{ infoForm.website_name }}
+                                <span></span>
                             </div>
                         </li>
-                        <li >
+                        <li>
                             <div class="addFormBox">
-                                {{infoForm.username}}
-                            <span></span>
+                                {{ infoForm.username }}
+                                <span></span>
                             </div>
                         </li>
-                        <li >
+                        <li>
                             <div class="addFormBox">
-                                {{infoForm.website_password}}
-                            <span></span>
+                                {{ infoForm.website_password }}
+                                <span></span>
                             </div>
                         </li>
                         <input id="addPasswordButton" type="submit" value="Add Password">
                     </form>
                 </div>
-
-                {% if user.profile.vault_locked%}
-                <div class="buttons">
-                    <h4 id="master_input_title">Unlock The Vault</h4>
-                    <form action="/vault_unlock" method="post">
-                        {% csrf_token %}
-                        <li>
-                            <div class="addFormBox">
-                                <input type="password" name="master_password" id="input_master_password" maxlength="50" required="" placeholder="Enter Master Password">
-                                <span></span>
-                            </div>
-                        </li>
-                        <input id="addPasswordButton" type="submit" value="Submit">
-                    </form>
-                </div>
-                {% endif %}
-
-                {% if not user.profile.vault_locked%}
-                <div class="buttons" id="buttons-locked">
-                    <form action="/vault_lock" method="post">
-                        {% csrf_token %}
-                        <button class="metal radial"><h3 id="radialButtonText">Lock</h3></button>
-                    </form>
-                </div>
-                {% endif %}
-
-                <div class="messageBox">
-                    <div class="tvScreen">
-                        <ul class="vault_messages" id="vaultMessagesContainer">
-                            {% if messages %}
-                                {% for message in messages %}
-                                    <h3><li{% if message.tags == 'vault' %} class="{{ message.tags.error }}"{% endif %}>{{ message }}</li></h3>
-                                {% endfor %}
-                             {% endif %} 
-                        </ul>
-
-                    </div>
+            </div>
+            {% if user.profile.vault_locked %}
+            <div class="buttons">
+                <h4 id="master_input_title">Unlock The Vault</h4>
+                <form action="/vault_unlock" method="post">
+                    {% csrf_token %}
+                    <li>
+                        <div class="addFormBox">
+                            <input type="password" name="master_password" id="input_master_password" maxlength="50" required="" placeholder="Enter Master Password">
+                            <span></span>
+                        </div>
+                    </li>
+                    <input id="addPasswordButton" type="submit" value="Submit">
+                </form>
+            </div>
+            {% endif %}
+            {% if not user.profile.vault_locked %}
+            <div class="buttons" id="buttons-locked">
+                <form action="/vault_lock" method="post">
+                    {% csrf_token %}
+                    <button class="metal radial"><h3 id="radialButtonText">Lock</h3></button>
+                </form>
+            </div>
+            {% endif %}
+            <div class="messageBox">
+                <div class="tvScreen">
+                    <ul class="vault_messages" id="vaultMessagesContainer">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <h3><li{% if message.tags == 'vault' %} class="{{ message.tags.error }}"{% endif %}>{{ message }}</li></h3>
+                            {% endfor %}
+                        {% endif %} 
+                    </ul>
                 </div>
             </div>
+        </div>
     </div> 
-    {% block scripts %}
-    <script>
+
+    <div id="editForm" class="addForm" style="display: none;">
+        <form id="editPasswordForm" method="post" action="{% url 'edit_password' password_id=0 %}">
+            {% csrf_token %}
+            <h4 id="addFormBoxTitle">Edit The Vault</h4>
+            <li>
+                <div class="addFormBox">
+                    {{ infoForm.website_name }}
+                    <span></span>
+                </div>
+            </li>
+            <li>
+                <div class="addFormBox">
+                    {{ infoForm.username }}
+                    <span></span>
+                </div>
+            </li>
+            <li>
+                <div class="addFormBox">
+                    {{ infoForm.website_password }}
+                    <span></span>
+                </div>
+            </li>
+            <input id="addPasswordButton" type="submit" value="Edit Password">
+        </form>
+    </div>
+    
+
+{% block scripts %}
+<script>
+    function showEditForm(passwordId) {
+        document.getElementById("addForm").style.display = "none";
+        document.getElementById("editForm").style.display = "block";
+        var editFormAction = "/edit_password/" + passwordId + "/";
+        document.getElementById("editPasswordForm").action = editFormAction;
+        var editFormMethod = "put"
+        document.getElementById("formContainer").appendChild(document.getElementById("editForm"));
+    }
+    
+
+    //Sets
+    setTimeout(function() {
+        var vaultMessagesContainer = document.getElementById("vaultMessagesContainer");
+        vaultMessagesContainer.style.transition = "opacity 0.5s";
+        vaultMessagesContainer.style.opacity = "0";
+        
         setTimeout(function() {
-            var vaultMessagesContainer = document.getElementById("vaultMessagesContainer");
-            vaultMessagesContainer.style.transition = "opacity 0.5s";
-            vaultMessagesContainer.style.opacity = "0";
-            
-            setTimeout(function() {
-                vaultMessagesContainer.style.display = "none";
-            }, 125);
-        }, 1500);
-    </script>
-    {% endblock %}
+            vaultMessagesContainer.style.display = "none";
+        }, 125);
+    }, 1500);
+</script>
 {% endblock %}
-
-
-
+{% endblock %}

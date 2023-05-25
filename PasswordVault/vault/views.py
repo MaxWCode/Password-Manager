@@ -150,7 +150,6 @@ def signup(request):
             profile.save()
             messages.success(request, "Account Successfully Created!", extra_tags='login_error')
             return HttpResponseRedirect(reverse('login'))
-        
     else:
         form = forms.SignupForm()
 
@@ -183,6 +182,36 @@ def copy_password(request, password_id):
         
     return redirect('vault')
 
+@login_required(login_url='/login')
+def edit_password(request, password_id):
+    #Get Specific User
+    try:
+        userInfo = Info.objects.get(pk=password_id, user_account=request.user)
+    except Info.DoesNotExist:
+        messages.error(request, 'Password not found')
+        return redirect('vault')
+
+    #Render form
+    if request.method == 'POST':
+        form = forms.InfoForm(request.POST)
+        if form.is_valid():
+            website_name = form.cleaned_data['website_name']
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['website_password']
+            encrypted_password = FERNET.encrypt(password.encode('utf-8'))
+
+            userInfo.website_name = website_name
+            userInfo.username = username
+            userInfo.website_password = encrypted_password
+            userInfo.save()
+
+            messages.success(request, "Edited The Vault", extra_tags='vault')
+            return HttpResponseRedirect(reverse('vault'))
+    else:
+        form = forms.InfoForm()
+    return render(request, "vault/vault.html", {
+        "infoForm": form
+    })
 
 @login_required(login_url='/login')
 def delete_password(request, password_id):
