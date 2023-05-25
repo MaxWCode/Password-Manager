@@ -11,6 +11,7 @@ urlpatterns = [
     path('logout', views.logout_view, name="logout"),
     path('copy_password/<int:password_id>/', views.copy_password, name='copy_password'),
     path("delete_password/<int:password_id>/", views.delete_password, name="delete_password"),
+    path("edit_password/<int:password_id>/", views.edit_password, name="edit_password"),
     path("vault_unlock", views.vault_unlock, name="vault_unlock"),
     path('vault_lock', views.vault_lock, name="vault_lock"),
 ]
