@@ -11,6 +11,6 @@ psycopg2-binary==2.9.6
 pycparser==2.21
 pyperclip==1.8.2
 python-decouple==3.8
-python-dotenv==1.0.0
+python-dotenv==0.17.1
 sqlparse==0.4.4
 typing_extensions==4.6.2
