@@ -1,1 +1,1 @@
-web: gunicorn PasswordVault.wsgi:application
+web: gunicorn PasswordVault.wsgi
