@@ -31,7 +31,7 @@ load_dotenv()
 ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = ['*']
 
