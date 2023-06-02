@@ -21,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('ENCRYPTION_KEY')
 
 # Generate the encryption key and store it in an environment variable
 from dotenv import load_dotenv
 load_dotenv()
 
+SECRET_KEY = os.getenv('ENCRYPTION_KEY')
 ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
