@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-t&v5%d=^i0ri-+*c5w9h&$qtk*x98iuh@)1%_w1$n6hyoz3@*j'
+SECRET_KEY = os.getenv('ENCRYPTION_KEY')
 
 # Generate the encryption key and store it in an environment variable
 from dotenv import load_dotenv
@@ -32,7 +32,7 @@ ENCRYPTION_KEY = os.getenv('ENCRYPTION_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 

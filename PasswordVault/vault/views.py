@@ -58,7 +58,11 @@ def vault_unlock(request):
         except Profile.DoesNotExist:
             messages.error(request, 'Profile not found')
             return redirect('vault')
+        if not profile_master_password:
+            messages.error(request, 'Master Password not set')
+            return redirect('vault')
         try:
+            print(profile_master_password)
             decrypted_password = FERNET.decrypt(eval(profile_master_password)).decode()
         except InvalidToken as error:
             messages.error(request, "Invalid Token", extra_tags='vault')
