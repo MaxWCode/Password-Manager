@@ -1,42 +1,79 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block pageTitle %}
 {% endblock %}
 
 {% block content %}
-    <div id="homeMain">
-        {% if user.is_authenticated %}
-            <div id="homeAlert">
-                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-                <h6>Active Account: {{ user.username }}</h3>
-            </div>
-
-            <div id="mainBox">
-                {% if user.profile.master_password_set %}
-                    <!-- Master password already set -->
-                    <h1>Master Password has been set.</h1>
-                {% else %}
-                    <!-- Master password not set -->
-                <div id="masterPassBox">
-                    <h1 id="masterPassTitle"> SET A MASTER PASSWORD </h1>
-                    <form id="masterForm" action="account" method="post">
-                        {% csrf_token %}
-                        <input class="masterPasswordInput" type="password" name="master_password" placeholder="Enter Master Password" required>
-                        <input class="masterPasswordInput" type="password" name="re_master_password" placeholder="Re-Enter Master Password" required>
-                        <input id="masterPassSubmit" type="submit" value="Submit">
-                    </form>
-                </div>
-                <div>
-                    {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li{% if message.tags == 'account_message' %} class="{{ message.tags.error }}"{% endif %}>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %} 
-                </div>
-            </div>
-            {% endif %}
+    <div id="accountMsgContainer">
+        <p id="clock">{{ time }}</p>
+        {% if messages %}
+        <ul class="accountMessages" id="fade">
+            {% for message in messages %}
+                <li{% if message.tags == 'account_message' %} class="{{ message.tags.error }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
         {% endif %} 
+        <p id="date">{{ date }}</p>
     </div>
+    <div id="formBox">
+        <div id="accountForm">
+        {% if user.is_authenticated %}
+                <div id="accountMain">
+                    <div id="masterPassBox">
+                        <h1 id="masterPassTitle"> SET A MASTER PASSWORD </h1>
+                        <form id="masterForm" action="account" method="post">
+                            {% if user.profile.master_password_set %}
+                                <!-- Master password set -->
+                                <h1 id="masterPassSet"> Master password set </h1>
+                            {% else %}
+                                {% csrf_token %}
+                                {{ MasterPasswordForm.password}}
+                                {{ MasterPasswordForm.re_password}}
+                                <input id="masterPassSubmit" type="submit" value="Submit">
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            {% endif %} 
+        </div>
+        <div id="accountForm">
+            {% if user.is_authenticated %}
+                <div id="accountMain">
+                    <!-- Master password not set -->
+                    <div id="masterPassBox">
+                        <h1 id="masterPassTitle"> RESET MASTER PASSWORD </h1>
+                        <form id="masterForm" method="post" action="{% url 'edit_master_password' %}">
+                            {% csrf_token %}
+                            {{ ResetMasterPwForm.password }}
+                            {{ ResetMasterPwForm.new_password }}
+                            {{ ResetMasterPwForm.re_new_password }}
+                            <input id="resetMasterPassSubmit" type="submit" value="Submit">
+                        </form>
+                    </div>
+                </div>
+            {% endif %} 
+        </div>
+        <div id="accountForm">
+            {% if user.is_authenticated %}
+                <div id="accountMain">
+                    <!-- Master password not set -->
+                    <div id="masterPassBox">
+                        <h1 id="masterPassTitle"> CHANGE YOUR PASSWORD </h1>
+                        <form id="masterForm" method="post" action="{% url 'edit_user_password' %}">
+                            {% csrf_token %}
+                            {{ resetPasswordForm.password }}
+                            {{ resetPasswordForm.new_password }}
+                            {{ resetPasswordForm.re_new_password }}
+                            <input id="resetMasterPassSubmit" type="submit" value="Submit">
+                        </form>
+                    </div>
+                </div>
+            {% endif %} 
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/account.js' %}"></script>
 {% endblock %}

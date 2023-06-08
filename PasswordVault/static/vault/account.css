@@ -1,22 +1,37 @@
+#formBox{
+    display: flex;
+    background-color: #1f2430;
+}
+
+#accountMain{
+    display: flex;
+    flex-direction: row;
+    background-color: #1f2430;
+    height: 100vh;
+}
+
 h1#masterPassTitle {
     font-size: 40px;
     text-align: center;
     padding: 19px;
+    background-color: #05081b;
     margin-bottom: -27px;
-}
+    border-bottom: 10px solid #050e24;
+    color: mintcream;
+    text-shadow: 0 0 0px #fff, 0 0 0px #fff, 0 0 21px #fff, 0 0 42px #000cff, 0 0 82px #000cff, 0 0 92px #000cff, 0 0 102px #000cff, 0 0 151px #000cff;}
+
 
 #masterPassBox {
-    margin-left: 8vh;
-    height: 60vh;
-    margin-top: 10vh;
-    width: 30%;
-    background-color: #1f2430;
     border-radius: 14px;
-    border: 10px solid darkcyan;
+    border: 10px solid #050e24;
     display: flex;
     align-items: center;
     flex-direction: column;
+    background-color: #0c162e;
     justify-content: space-between;
+    height: 64vh;
+    width: 51vh;
+    margin-top: 65px;
 }
 
 form#masterForm {
@@ -26,13 +41,92 @@ form#masterForm {
     height: 100%;
 }
 
+#masterPassSet {
+    padding: 107px;
+    text-align: center;
+}
+
 input#masterPasswordInput {
-    width: 200%;
-    margin-top: 33px;
+    width: 230%;
+    margin-top: 50px;
+    padding: 10px;
     height: 59px;
+    text-align: center;
+    color: white;
+    background-color: #050e24;
+    border: solid 1px black;
+}
+
+input#resetMasterPasswordInput {
+    width: 230%;
+    margin-top: 43px;
+    padding: 10px;
+    height: 51px;
+    margin-bottom: -28px;
+    text-align: center;
+    color: white;
+    background-color: #050e24;
+    border: solid 1px black;
+}
+
+#resetMasterPassSubmit {
+    margin: 38px;
+    margin-top: 61px;
+    background: border-box;
+    color: cadetblue;
 }
 
 input#masterPassSubmit {
     margin: 38px;
     margin-top: 49px;
+}
+
+input.masterPasswordInput {
+    width: 38vh;
+    height: 8vh;
+    margin-top: 44px;
+    text-align: center;
+    border-radius: 25px;
+}
+input#masterPassSubmit {
+    margin: 38px;
+    margin-top: 40px;
+    background: border-box;
+    color: cadetblue;
+}
+input#masterPassSubmit:hover {
+    background: rgba(196, 200, 219, 0.5);
+}
+
+#accountMsgContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    height: 5vh;
+    text-align: center;
+    background-image: radial-gradient( rgb(79 87 208 / 75%), black 120% );
+    min-height: 5vh;
+    border: 5px solid darkslategrey;
+}
+.accountMessages {
+    color: mintcream;
+    font-size: 19px;
+    text-align: center;
+    list-style: none;
+    font-weight: bolder;
+    text-shadow: 0 0 0px #fff, 0 0 0px #000cff, 0 0 21px #fff, 0 0 42px #000cff, 0 0 82px #000cff, 0 0 92px hsl(0deg 0% 100% / 0%), 0 0 102px #000cff, 0 0 151px #000cff;
+}
+#clock {
+    font-size: 19px;
+    margin-top: 0px;
+    text-shadow: 0 0 0px #fff, 0 0 0px #000cff, 0 0 21px #fff, 0 0 42px #000cff, 0 0 82px #000cff, 0 0 92px hsl(0deg 0% 100% / 0%), 0 0 102px #000cff, 0 0 151px #000cff;
+    color: mintcream;
+    padding-left: 15px;
+}
+#date {
+    text-shadow: 0 0 0px #fff, 0 0 0px #000cff, 0 0 21px #fff, 0 0 42px #000cff, 0 0 82px #000cff, 0 0 92px hsl(0deg 0% 100% / 0%), 0 0 102px #000cff, 0 0 151px #000cff;
+    color: mintcream;
+    margin-top: 3px;
+    padding-right: 15px;
 }

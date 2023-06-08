@@ -1,6 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import Info
+from django.contrib import messages
+from django.contrib.auth.models import User
 
 class SignupForm(forms.Form):
     username = forms.CharField(
@@ -120,3 +122,121 @@ class EditForm(forms.Form):
         'required': 'true',
         'placeholder': 'New Website Password'
     }))
+
+class MasterPasswordForm(forms.Form):
+    password = forms.CharField(
+        max_length=30,
+        widget=forms.PasswordInput(attrs={
+            'id': 'masterPasswordInput',
+            'type': 'password',
+            'placeholder': 'Enter Master Password',
+            'text-align': 'center',
+            'name': 'password'
+        }),
+        error_messages={
+            "required": "Enter Master Password"
+        }
+    )
+    
+    re_password = forms.CharField(
+        max_length=30,
+        widget=forms.PasswordInput(attrs={
+            'id': 'masterPasswordInput',
+            'type': 'password',
+            'placeholder': 'Re-Enter Master Password',
+            'text-align': 'center',
+            'name': 're_password'
+        }),
+        error_messages={
+            "required": "Re-Enter Master Password"
+        }
+    )
+
+class ResetMasterPasswordForm(forms.Form):
+    password = forms.CharField(
+        max_length=30,
+        widget=forms.PasswordInput(attrs={
+            'id': 'resetMasterPasswordInput',
+            'type': 'password',
+            'placeholder': 'Enter Master Password',
+            'text-align': 'center',
+            'name': 'password'
+        }),
+        error_messages={
+            "required": "Enter Password"
+        }
+    )
+
+    new_password = forms.CharField(
+        max_length=30,
+        widget=forms.PasswordInput(attrs={
+            'id': 'resetMasterPasswordInput',
+            'type': 'password',
+            'placeholder': 'Enter New Password',
+            'text-align': 'center',
+            'name': 'new_password'
+        }),
+        error_messages={
+            "required": "Enter Master Password"
+        }
+    )
+    
+    re_new_password = forms.CharField(
+        max_length=30,
+        widget=forms.PasswordInput(attrs={
+            'id': 'resetMasterPasswordInput',
+            'type': 'password',
+            'placeholder': 'Re-Enter Your New Password',
+            'text-align': 'center',
+            'name': 're_new_password'
+        }),
+        error_messages={
+            "required": "Re-Enter Master Password"
+        }
+    )
+
+class ResetPasswordForm(forms.Form):
+    password = forms.CharField(
+        max_length=30,
+        widget=forms.PasswordInput(attrs={
+            'id': 'resetMasterPasswordInput',
+            'type': 'password',
+            'placeholder': 'Enter Password',
+            'text-align': 'center',
+            'name': 'password'
+        }),
+        error_messages={
+            "required": "Enter Password"
+        }
+    )
+
+    new_password = forms.CharField(
+        max_length=30,
+        widget=forms.PasswordInput(attrs={
+            'id': 'resetMasterPasswordInput',
+            'type': 'password',
+            'placeholder': 'Enter New Password',
+            'text-align': 'center',
+            'name': 'new_password'
+        }),
+        error_messages={
+            "required": "Enter Master Password"
+        }
+    )
+    
+    re_new_password = forms.CharField(
+        max_length=30,
+        widget=forms.PasswordInput(attrs={
+            'id': 'resetMasterPasswordInput',
+            'type': 'password',
+            'placeholder': 'Re-Enter Your New Password',
+            'text-align': 'center',
+            'name': 're_new_password'
+        }),
+        error_messages={
+            "required": "Re-Enter Master Password"
+        }
+    )
+
+
+

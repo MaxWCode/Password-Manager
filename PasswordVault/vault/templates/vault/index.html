@@ -1,19 +1,33 @@
 {% extends 'base.html' %}
 
 {% block pageTitle %}
+    <title>Welcome to My Website</title>
 {% endblock %}
 
 {% block content %}
     <div id="homeMain">
         {% if user.is_authenticated %}
-            <div id="homeAlert">
-                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-                <h6>Active Account: {{ user.username }}</h3>
-            </div>
+
 
             <div id="mainBox">
-
+                    <div class="title">   
+                        <h1 id="homeTitle">Welcome to The Vault</h1>
+                    </div>
+                    <div id="instructions">   
+                    <p id="helloP"> Hello {{ user.username }}, To get started with the Vault please follow these steps:</p>
+                    <ul id="stepsList">
+                        <li>Create an Account and/or Login
+                        <li>Create a master password for your account on the account page.</li>
+                        <li>Enter your master password to unlock the vault.</li>
+                        <li>Add, Edit and Delete your stored passwords.</li>
+                    </ul>
+                    <p id="noteP">Once you have successfully accessed the vault, you can manage your passwords securely.</p>
+            </div>
             </div>
         {% endif %} 
     </div>
+    {% comment %} <div id="homeAlert">
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <h6>Active Account: {{ user.username }}</h6>
+    </div> {% endcomment %}
 {% endblock %}

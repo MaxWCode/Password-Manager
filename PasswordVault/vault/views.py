@@ -7,11 +7,13 @@ from django.urls import reverse
 from datetime import datetime
 from . import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .models import Info, Profile
 import pyperclip
 import os
+import re
 
 #add status codes gto
 
@@ -25,51 +27,207 @@ FERNET = Fernet(key)
 def index(request):
     return render(request, "vault/index.html")
 
+
+# ...
+def reset_master_password(request):
+    if request.method == 'POST':
+        resetMasterPasswordForm = forms.ResetMasterPasswordForm(request.POST)
+        if resetMasterPasswordForm.is_valid():
+            password = resetMasterPasswordForm.cleaned_data.get('password')
+            new_password = resetMasterPasswordForm.cleaned_data.get('new_password')
+            re_new_password = resetMasterPasswordForm.cleaned_data.get('re_new_password')
+
+            profile = Profile.objects.get(user=request.user)
+            decrypted_master_password = FERNET.decrypt(eval(profile.master_password)).decode()
+
+            if str(password) != str(decrypted_master_password):
+                messages.error(request, "Invalid Original Password", extra_tags='account_message')
+                return redirect('account')
+            else:
+                # Check if passwords match
+                if new_password == re_new_password:
+                    # Password validations in the view
+                    if len(new_password) < 8:
+                        messages.error(request, "Password should be at least 8 characters long", extra_tags='account_message')
+                    elif not re.search(r'\d', new_password):
+                        messages.error(request, "Password should contain at least one digit", extra_tags='account_message')
+                    elif not re.search(r'[A-Z]', new_password):
+                        messages.error(request, "Password should contain at least one uppercase letter", extra_tags='account_message')
+                    elif not re.search(r'[a-z]', new_password):
+                        messages.error(request, "Password should contain at least one lowercase letter", extra_tags='account_message')
+                    elif not re.search(r'[!@#$%^&*(),.?":{}|<>]', new_password):
+                        messages.error(request, "Password should contain at least one special character", extra_tags='account_message')
+                    else:
+                        # Encrypt Password
+                        encrypted_masterPassword = FERNET.encrypt(new_password.encode('utf-8'))
+                        profile.master_password = encrypted_masterPassword
+                        profile.save()
+
+                        messages.success(request, "Master Password Successfully Reset!", extra_tags='account_message')
+                        return redirect('account')
+                else:
+                    messages.error(request, "Passwords Don't Match", extra_tags='account_message')
+                    return redirect('account')
+        else:
+            messages.error(request, "Invalid Form", extra_tags='account_message')
+            return redirect('account')
+    else:
+        resetMasterPasswordForm = forms.ResetMasterPasswordForm()
+        MasterPasswordForm = forms.MasterPasswordForm()  
+
+    MasterPasswordForm = forms.MasterPasswordForm() 
+    resetMasterPasswordForm = forms.ResetMasterPasswordForm() 
+
+    return render(request, 'vault/account.html', {
+        'MasterPasswordForm': MasterPasswordForm,
+        'ResetMasterPwForm': resetMasterPasswordForm,
+    })
+
+
+@login_required(login_url='/login')
+def edit_user_password(request):
+    resetMasterPasswordForm = None  # Initialize with a default value
+    if request.method == 'POST':
+        resetPasswordForm = forms.ResetPasswordForm(request.POST)
+        if resetPasswordForm.is_valid():
+            password = resetPasswordForm.cleaned_data.get('password')
+            new_password = resetPasswordForm.cleaned_data.get('new_password')
+            re_new_password = resetPasswordForm.cleaned_data.get('re_new_password')
+
+            user = request.user
+
+            if not user.check_password(password):
+                messages.error(request, "Invalid Original Password", extra_tags='account_message')
+                return redirect('account')
+
+            if new_password != re_new_password:
+                messages.error(request, "Passwords Don't Match", extra_tags='account_message')
+                return redirect('account')
+
+            if len(new_password) < 8:
+                messages.error(request, "Password should be at least 8 characters long", extra_tags='account_message')
+            elif not re.search(r'\d', new_password):
+                messages.error(request, "Password should contain at least one digit", extra_tags='account_message')
+            elif not re.search(r'[A-Z]', new_password):
+                messages.error(request, "Password should contain at least one uppercase letter", extra_tags='account_message')
+            elif not re.search(r'[a-z]', new_password):
+                messages.error(request, "Password should contain at least one lowercase letter", extra_tags='account_message')
+            elif not re.search(r'[!@#$%^&*(),.?":{}|<>]', new_password):
+                messages.error(request, "Password should contain at least one special character", extra_tags='account_message')
+            else:
+                user.set_password(new_password)
+                user.save()
+
+                messages.success(request, "Password Successfully Reset!", extra_tags='account_message')
+                return redirect('account')
+
+        else:
+            messages.error(request, "Invalid Form", extra_tags='account_message')
+            return redirect('account')
+    else:
+        resetPasswordForm = forms.ResetPasswordForm()
+
+    return render(request, "vault/account.html", {
+        'resetPasswordForm': resetPasswordForm,
+        'resetMasterPasswordForm': resetMasterPasswordForm,
+        "time": time_string,
+        "date": date_string
+    })
+
+
+
 @login_required(login_url='/login')
 def account(request):
     if request.method == 'POST':
-        master_password = request.POST.get('master_password')
-        re_master_password = request.POST.get('re_master_password')
-        if master_password == re_master_password:
-            profile = Profile.objects.get(user=request.user)
-
-            #Encrypt Password
-            encrypted_masterPassword = FERNET.encrypt(master_password.encode('utf-8'))
-            profile.master_password = encrypted_masterPassword
-            profile.master_password_set = True
-            profile.save()
-            messages.success(request, "Master Password Successfully Created!", extra_tags='account_message')
-            return redirect('account')
+        form = forms.MasterPasswordForm(request.POST)
+        if form.is_valid():
+            master_password = form.cleaned_data.get('password')
+            re_master_password = form.cleaned_data.get('re_password')
+            
+            # Check if passwords match
+            if master_password == re_master_password:
+                # Password validations in view this time
+                if len(master_password) < 8:
+                    messages.error(request, "Password should be at least 8 characters long", extra_tags='account_message')
+                elif not re.search(r'\d', master_password):
+                    messages.error(request, "Password should contain at least one digit", extra_tags='account_message')
+                elif not re.search(r'[A-Z]', master_password):
+                    messages.error(request, "Password should contain at least one uppercase letter", extra_tags='account_message')
+                elif not re.search(r'[a-z]', master_password):
+                    messages.error(request, "Password should contain at least one lowercase letter", extra_tags='account_message')
+                elif not re.search(r'[!@#$%^&*(),.?":{}|<>]', master_password):
+                    messages.error(request, "Password should contain at least one special character", extra_tags='account_message')
+                else:
+                    profile = Profile.objects.get(user=request.user)
+                    
+                    # Encrypt Password
+                    encrypted_masterPassword = FERNET.encrypt(master_password.encode('utf-8'))
+                    profile.master_password = encrypted_masterPassword
+                    profile.master_password_set = True
+                    profile.save()
+                    
+                    messages.success(request, "Master Password Successfully Created!", extra_tags='account_message')
+                    return redirect('account')
+            else:
+                messages.error(request, "Passwords Don't Match", extra_tags='account_message')
         else:
-            messages.error(request, "Passwords Don't Match", extra_tags='account_message')
-            return redirect('account')
-    return render(request, "vault/account.html")
+            messages.error(request, "Invalid Form", extra_tags='account_message')
+    else:
+        form = forms.MasterPasswordForm()
+        resetMasterPasswordForm = forms.ResetMasterPasswordForm()
+        resetPasswordForm = forms.ResetPasswordForm()
+
+    current_time = datetime.now()
+    time_string = current_time.strftime('%H:%M')
+    date_string = current_time.strftime('%d/%m')
+
+    form = forms.MasterPasswordForm()
+    resetMasterPasswordForm = forms.ResetMasterPasswordForm()
+    resetPasswordForm = forms.ResetPasswordForm()
+
+    return render(request, "vault/account.html", {
+        "MasterPasswordForm": form,
+        'ResetMasterPwForm': resetMasterPasswordForm,
+        'resetPasswordForm': resetPasswordForm,
+        "time": time_string,
+        "date": date_string
+    })
+
+
 
 @login_required(login_url='/login')
 def vault_unlock(request):
+    #Get Specific User
+    try:
+        profile = Profile.objects.get(user=request.user)
+        profile_master_password = profile.master_password
+    except Profile.DoesNotExist:
+        messages.error(request, 'Profile not found')
+        return redirect('vault')
     if request.method == 'POST':
-        master_password = request.POST.get('master_password')
-        decrypted_password = ''
+        if profile_master_password:
+            master_password = request.POST.get('master_password')
+            decrypted_password = ''
         
-        #Get Specific User
-        try:
-            profile = Profile.objects.get(user=request.user)
-            profile_master_password = profile.master_password
-        except Profile.DoesNotExist:
-            messages.error(request, 'Profile not found')
-            return redirect('vault')
-        try:
-            decrypted_password = FERNET.decrypt(eval(profile_master_password)).decode()
-        except InvalidToken as error:
-            messages.error(request, "Invalid Token", extra_tags='vault')
+            try:
+                decrypted_password = FERNET.decrypt(eval(profile_master_password)).decode()
+            except InvalidToken as error:
+                messages.error(request, "Invalid Token", extra_tags='vault')
+                return redirect('vault')
+        else:
+            messages.error(request, "Make a Master Password", extra_tags='vault')
             return redirect('vault')
 
-    if decrypted_password == master_password:
-        profile.vault_locked = False
-        profile.save()
-        messages.success(request, "Vault Unlocked", extra_tags='vault')
+    if profile_master_password:
+        if decrypted_password == master_password:
+            profile.vault_locked = False
+            profile.save()
+            messages.success(request, "Vault Unlocked", extra_tags='vault')
+        else:
+            messages.error(request, "Password doesn't match", extra_tags='vault')
     else:
-        messages.error(request, "Password doesn't match", extra_tags='vault')
+        messages.error(request, "Make a Master Password", extra_tags='vault')
+        return redirect('vault')
     return redirect('vault')
 
 @login_required(login_url='/login')
